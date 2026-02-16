@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portofolio Kreatif | Brainstorming Blue</title>
+    <title>Portofolio Kreatif | Reyhan Woenarwan</title>
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
     <style>
         /* --- 1. SETUP & VARIABLES --- */
@@ -39,61 +39,125 @@
             font-family: 'Poppins', sans-serif;
             background-color: var(--bg-deep);
             color: var(--text-main);
-            overflow-x: hidden;
+            overflow-x: hidden; /* Mencegah scroll samping */
             transition: background-color 0.5s, color 0.5s;
         }
 
-        /* --- PERLOADER FIXED & CENTERED --- */
+        /* --- 2. PRELOADER ROBOT CHARACTER (New!) --- */
         #preloader {
             position: fixed; 
             top: 0; left: 0; 
             width: 100%; height: 100%;
             background: var(--bg-deep);
             display: flex; 
+            flex-direction: column;
             justify-content: center; 
             align-items: center;
-            z-index: 9999; 
-            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+            z-index: 99999; /* Paling atas */
+            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
         }
         #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-        #load {
-            display: flex;
-            gap: 10px;
+        /* Karakter Robot CSS */
+        .robot-container {
             position: relative;
-            height: 50px;
+            width: 100px;
+            height: 120px;
+            animation: floatRobot 3s ease-in-out infinite;
         }
 
-        #load div {
-            opacity: 0;
-            font-family: 'Poppins', Helvetica, Arial, sans-serif;
-            font-weight: 800;
-            font-size: 2.5rem;
-            animation: move 2.5s linear infinite;
+        .robot-head {
+            width: 80px;
+            height: 70px;
+            background: var(--blue-neon);
+            border-radius: 15px;
+            position: absolute;
+            top: 0;
+            left: 10px;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .robot-face {
+            width: 60px;
+            height: 40px;
+            background: var(--bg-deep);
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        .eye {
+            width: 12px;
+            height: 12px;
+            background: var(--blue-neon);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--blue-neon);
+            animation: blinkEye 4s infinite;
+        }
+
+        .robot-ears {
+            position: absolute;
+            width: 100px;
+            height: 20px;
+            top: 25px;
+            left: 0;
+            z-index: 1;
+        }
+        .robot-ears::before, .robot-ears::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background: var(--text-muted);
+            border-radius: 4px;
+        }
+        .robot-ears::before { left: 0; }
+        .robot-ears::after { right: 0; }
+
+        .robot-body {
+            width: 50px;
+            height: 40px;
+            background: var(--text-muted);
+            position: absolute;
+            bottom: 0;
+            left: 25px;
+            border-radius: 0 0 15px 15px;
+            z-index: 1;
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
             color: var(--blue-neon);
-            text-shadow: 0 0 10px rgba(14, 165, 233, 0.3);
-            transform: rotate(180deg);
+            letter-spacing: 5px;
+            animation: pulseText 1.5s infinite;
         }
 
-        /* Penyesuaian Delay Huruf L-O-A-D-I-N-G */
-        #load div:nth-child(2) { animation-delay: 0.2s; }
-        #load div:nth-child(3) { animation-delay: 0.4s; }
-        #load div:nth-child(4) { animation-delay: 0.6s; }
-        #load div:nth-child(5) { animation-delay: 0.8s; }
-        #load div:nth-child(6) { animation-delay: 1s; }
-        #load div:nth-child(7) { animation-delay: 1.2s; }
-
-        @keyframes move {
-            0% { transform: translateX(-100px) rotate(180deg); opacity: 0; }
-            35% { transform: translateX(0px) rotate(0deg); opacity: 1; }
-            65% { transform: translateX(0px) rotate(0deg); opacity: 1; }
-            100% { transform: translateX(100px) rotate(-180deg); opacity: 0; }
+        /* Animasi Robot */
+        @keyframes floatRobot {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        @keyframes blinkEye {
+            0%, 45%, 55%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.1); }
+        }
+        @keyframes pulseText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        /* --- CANVAS BG --- */
+        /* --- 3. CANVAS BG --- */
         #canvas-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
 
-        /* --- NAVIGATION --- */
+        /* --- 4. NAVIGATION --- */
         nav {
             display: flex; justify-content: space-between; align-items: center;
             padding: 1.5rem 5%; position: fixed; width: 100%; z-index: 100;
@@ -116,7 +180,7 @@
         body.light-mode .ri-moon-clear-fill { display: none; }
         body.light-mode .ri-sun-fill { display: inline-block; }
 
-        /* --- HERO SECTION --- */
+        /* --- 5. HERO SECTION --- */
         header {
             height: 100vh;
             display: flex;
@@ -190,12 +254,12 @@
             transform: translateY(-3px);
         }
 
-        /* --- SECTIONS --- */
+        /* --- 6. SECTIONS --- */
         section { padding: 5rem 10%; }
         h2 { font-size: 2.5rem; margin-bottom: 3rem; text-align: center; }
         h2 span { border-bottom: 3px solid var(--blue-neon); padding-bottom: 5px; }
 
-        /* --- CARDS --- */
+        /* --- 7. CARDS --- */
         .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
         .card {
             background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.1);
@@ -210,7 +274,7 @@
         .tags { margin-top: 1rem; display: flex; gap: 10px; flex-wrap: wrap; }
         .tag { font-size: 0.7rem; padding: 5px 10px; background: rgba(14, 165, 233, 0.2); color: var(--blue-neon); border-radius: 20px; }
 
-        /* --- CHATBOT --- */
+        /* --- 8. CHATBOT --- */
         .chatbot-container { position: fixed; bottom: 30px; right: 30px; z-index: 200; display: flex; flex-direction: column; align-items: flex-end; }
         .chat-toggle-btn {
             width: 60px; height: 60px; border-radius: 50%; background: var(--blue-neon);
@@ -236,17 +300,16 @@
         .chat-input-area input { flex: 1; padding: 10px; border: none; outline: none; background: transparent; color: var(--text-main); }
         .chat-send-btn { background: none; border: none; color: var(--blue-neon); font-size: 1.5rem; cursor: pointer; padding: 0 10px; }
 
-        /* --- KEYFRAMES --- */
+        /* --- 9. KEYFRAMES --- */
         @keyframes blinkCursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes slideInUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        /* --- MEDIA QUERY --- */
+        /* --- 10. MEDIA QUERY --- */
         @media (max-width: 768px) {
             h1 { font-size: 2.5rem; }
             .nav-links { display: none; }
-            #load div { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -254,15 +317,17 @@
 <body>
 
     <div id="preloader">
-        <div id="load">
-            <div>L</div>
-            <div>O/div>
-            <div>A</div>
-            <div>D</div>
-            <div>I</div>
-            <div>N</div>
-            <div>G</div>
+        <div class="robot-container">
+            <div class="robot-ears"></div>
+            <div class="robot-head">
+                <div class="robot-face">
+                    <div class="eye left"></div>
+                    <div class="eye right"></div>
+                </div>
+            </div>
+            <div class="robot-body"></div>
         </div>
+        <div class="loading-text">LOADING...</div>
     </div>
 
     <canvas id="canvas-bg"></canvas>
@@ -357,13 +422,21 @@
         const savedTheme = localStorage.getItem('theme');
         if(savedTheme === 'light') document.body.classList.add('light-mode');
 
-        // 1. PRELOADER
-        window.addEventListener("load", () => {
-            setTimeout(() => {
-                const preloader = document.getElementById('preloader');
+        // 1. PRELOADER & SAFETY CHECK
+        function finishLoading() {
+            const preloader = document.getElementById('preloader');
+            if (preloader && !preloader.classList.contains('hidden')) {
                 preloader.classList.add('hidden');
-            }, 2500); 
+            }
+        }
+
+        window.addEventListener("load", () => {
+            // Beri sedikit waktu agar user melihat robotnya
+            setTimeout(finishLoading, 2000); 
         });
+
+        // Backup: Jika koneksi lambat, paksa buka setelah 5 detik
+        setTimeout(finishLoading, 5000);
 
         // 2. THEME TOGGLE
         const themeToggleBtn = document.getElementById('theme-toggle');
@@ -372,6 +445,10 @@
         themeToggleBtn.addEventListener('click', () => {
             body.classList.toggle('light-mode');
             localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
+            // Update warna partikel saat tema berubah
+            if(particlesArray) {
+                particlesArray.forEach(p => p.updateColor());
+            }
         });
 
         // 3. TYPING EFFECT
@@ -449,10 +526,10 @@
         chatSend.addEventListener('click', handleChat);
         chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleChat(); });
 
-        // 5. CANVAS PARTICLE BACKGROUND
+        // 5. CANVAS PARTICLE BACKGROUND (Dioptimalkan)
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
-        let particlesArray;
+        let particlesArray = [];
 
         function setCanvasSize() {
             canvas.width = window.innerWidth;
@@ -467,6 +544,10 @@
                 this.size = Math.random() * 2 + 1;
                 this.speedX = Math.random() * 1 - 0.5;
                 this.speedY = Math.random() * 1 - 0.5;
+                this.color = document.body.classList.contains('light-mode') ? '#d97706' : '#0ea5e9';
+            }
+            updateColor() {
+                this.color = document.body.classList.contains('light-mode') ? '#d97706' : '#0ea5e9';
             }
             update() {
                 this.x += this.speedX;
@@ -479,7 +560,7 @@
                 }
             }
             draw() {
-                ctx.fillStyle = document.body.classList.contains('light-mode') ? '#d97706' : '#0ea5e9';
+                ctx.fillStyle = this.color;
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 ctx.fill();
@@ -495,7 +576,9 @@
 
         function animateParticles() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Warna garis koneksi
             const lineColor = document.body.classList.contains('light-mode') ? '217, 119, 6' : '14, 165, 233';
+            
             for (let i = 0; i < particlesArray.length; i++) {
                 particlesArray[i].update();
                 particlesArray[i].draw();
@@ -522,6 +605,4 @@
     </script>
 </body>
 </html>
-
-
 
