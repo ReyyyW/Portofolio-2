@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portofolio Kreatif | Brainstorming Blue</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        /* --- 1. SETUP & VARIABLES --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+
+        :root {
+            --bg-deep: #020617;
+            --bg-card: rgba(30, 41, 59, 0.4);
+            --blue-neon: #0ea5e9;
+            --blue-soft: #93c5fd;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --nav-bg: rgba(2, 6, 23, 0.8);
+            --chat-bg: #0f172a;
+            --chat-user-bubble: #1e293b;
+        }
+
+        body.light-mode {
+            --bg-deep: #fdfdf6;
+            --bg-card: rgba(255, 255, 255, 0.5);
+            --blue-neon: #d97706; /* Diubah sedikit lebih gelap agar terbaca di putih */
+            --blue-soft: #fbbf24;
+            --text-main: #1c1917;
+            --text-muted: #57534e;
+            --nav-bg: rgba(253, 253, 246, 0.8);
+            --chat-bg: #ffffff;
+            --chat-user-bubble: #fef08a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            overflow-x: hidden;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        /* --- PRELOADER --- */
+        #preloader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #020617; display: flex; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+        #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .brain-icon { font-size: 5rem; color: var(--blue-neon); animation: pulseBrain 2s infinite; }
+        .loading-text { color: white; margin-top: 1rem; letter-spacing: 2px; animation: blink 1.5s infinite; }
+        @keyframes pulseBrain {
+            0% { transform: scale(1); filter: drop-shadow(0 0 0px var(--blue-neon)); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 20px var(--blue-neon)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 0px var(--blue-neon)); }
+        }
+
+        /* --- CANVAS BG --- */
+        #canvas-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1.5rem 5%; position: fixed; width: 100%; z-index: 100;
+            background: var(--nav-bg); backdrop-filter: blur(5px);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--blue-neon); text-transform: uppercase; letter-spacing: 2px; }
+        .nav-right { display: flex; align-items: center; gap: 2rem; }
+        .nav-links a {
+            color: var(--text-main); text-decoration: none; margin-left: 2rem;
+            font-weight: 400; transition: 0.3s; position: relative;
+        }
+        .nav-links a:hover::after { width: 100%; }
+        .nav-links a::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: -5px; left: 0; background-color: var(--blue-neon); transition: 0.3s;
+        }
+        #theme-toggle { background: none; border: none; cursor: pointer; font-size: 1.5rem; color: var(--blue-neon); transition: transform 0.3s; }
+        #theme-toggle:hover { transform: rotate(20deg) scale(1.1); }
+        .ri-sun-fill { display: none; }
+        body.light-mode .ri-moon-clear-fill { display: none; }
+        body.light-mode .ri-sun-fill { display: inline-block; }
+
+        /* --- HERO SECTION (PERBAIKAN UTAMA DI SINI) --- */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero-subtitle {
+            color: var(--blue-neon);
+            font-weight: 600;
+            letter-spacing: 3px;
+            margin-bottom: 0.5rem; /* Jarak ke H1 */
+            animation: fadeIn 1s ease-out;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        h1 {
+            font-size: 4rem;
+            line-height: 1.2;
+            margin-bottom: 0.5rem; /* Jarak ke typing text */
+            background: linear-gradient(to right, #fff, var(--blue-soft));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: slideUp 1s ease-out;
+        }
+        
+        body.light-mode h1 {
+             background: linear-gradient(to right, #000, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Container untuk Typing Effect */
+        .typing-container {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem; /* JARAK PENTING: Antara teks dan tombol */
+            min-height: 1.5em; /* Mencegah layout lompat */
+            font-weight: 300;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            background-color: var(--blue-neon);
+            animation: blinkCursor 0.7s infinite;
+        }
+
+        .cta-btn {
+            padding: 14px 35px;
+            background: transparent;
+            border: 2px solid var(--blue-neon);
+            color: var(--blue-neon);
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.4s;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 0 10px rgba(14, 165, 233, 0.2);
+            animation: fadeIn 2s ease-out;
+            display: inline-block;
+        }
+
+        .cta-btn:hover {
+            background: var(--blue-neon);
+            color: var(--bg-deep);
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.8);
+            transform: translateY(-3px);
+        }
+
+        /* --- SECTIONS --- */
+        section { padding: 5rem 10%; }
+        h2 { font-size: 2.5rem; margin-bottom: 3rem; text-align: center; }
+        h2 span { border-bottom: 3px solid var(--blue-neon); padding-bottom: 5px; }
+
+        /* --- CARDS --- */
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .card {
+            background: var(--bg-card); border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px; padding: 2rem; backdrop-filter: blur(10px);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        body.light-mode .card { border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .card:hover { transform: translateY(-10px); border-color: var(--blue-neon); }
+        .card h3 { margin-bottom: 1rem; color: var(--blue-soft); }
+        body.light-mode .card h3 { color: var(--blue-neon); }
+        .card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+        .tags { margin-top: 1rem; display: flex; gap: 10px; flex-wrap: wrap; }
+        .tag { font-size: 0.7rem; padding: 5px 10px; background: rgba(14, 165, 233, 0.2); color: var(--blue-neon); border-radius: 20px; }
+
+        /* --- CHATBOT --- */
+        .chatbot-container { position: fixed; bottom: 30px; right: 30px; z-index: 200; display: flex; flex-direction: column; align-items: flex-end; }
+        .chat-toggle-btn {
+            width: 60px; height: 60px; border-radius: 50%; background: var(--blue-neon);
+            color: var(--bg-deep); border: none; font-size: 1.8rem; cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3); transition: 0.3s;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .chat-toggle-btn:hover { transform: scale(1.1) rotate(10deg); }
+        .chat-window {
+            width: 350px; height: 450px; background: var(--chat-bg); border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4); overflow: hidden; display: none;
+            flex-direction: column; margin-bottom: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        body.light-mode .chat-window { border: 1px solid rgba(0,0,0,0.1); }
+        .chat-window.active { display: flex; animation: slideInUp 0.3s ease-out; }
+        .chat-header { background: var(--blue-neon); color: var(--bg-deep); padding: 15px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .chat-message { max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 0.9rem; animation: fadeIn 0.3s; }
+        .bot-message { background: rgba(128, 128, 128, 0.1); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 2px; }
+        .user-message { background: var(--blue-neon); color: var(--bg-deep); align-self: flex-end; border-bottom-right-radius: 2px; }
+        .chat-input-area { padding: 10px; border-top: 1px solid rgba(255, 255, 255, 0.1); display: flex; }
+        body.light-mode .chat-input-area { border-top: 1px solid rgba(0,0,0,0.1); }
+        .chat-input-area input { flex: 1; padding: 10px; border: none; outline: none; background: transparent; color: var(--text-main); }
+        .chat-send-btn { background: none; border: none; color: var(--blue-neon); font-size: 1.5rem; cursor: pointer; padding: 0 10px; }
+
+        /* --- KEYFRAMES --- */
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @keyframes blinkCursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideInUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* --- MEDIA QUERY --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .nav-links { display: none; }
+            .chat-window { width: 300px; height: 400px; right: 10px; bottom: 80px; }
+            .chatbot-container { bottom: 20px; right: 20px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="preloader">
+        <div class="preloader-content">
+            <i class="ri-brain-line brain-icon"></i>
+            <p class="loading-text">MEMUAT...</p>
+        </div>
+    </div>
+
+    <canvas id="canvas-bg"></canvas>
+
+    <nav>
+        <div class="logo">My Portofolio</div>
+        <div class="nav-right">
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#projects">Projects</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <button id="theme-toggle" aria-label="Toggle Dark/Light Mode">
+                <i class="ri-moon-clear-fill"></i>
+                <i class="ri-sun-fill"></i>
+            </button>
+        </div>
+    </nav>
+
+    <header id="home">
+        <p class="hero-subtitle">Reyhan Woenarwan</p>
+        <h1>Industrial Engineer</h1>
+        
+        <div class="typing-container">
+            I am into <span id="typing-text"></span><span class="cursor">&nbsp;</span>
+        </div>
+
+        <a href="#projects" class="cta-btn">Lihat Karya Saya</a>
+    </header>
+
+    <section id="projects">
+        <h2><span>Proyek Unggulan</span></h2>
+        <div class="projects-grid">
+            <div class="card">
+                <h3>AI Engineer</h3>
+                <p>Pengembangan integrasi AI menggunakan Python dan REST API.</p>
+                <div class="tags">
+                    <span class="tag">React</span>
+                    <span class="tag">Node.js</span>
+                    <span class="tag">AI API</span>
+                    <span class="tag">Python</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Industrial Engineer</h3>
+                <p>Menghitung optimasi, pengendalian kualitas statistik, perencanaan layout pabrik dan fasilitas.</p>
+                <div class="tags">
+                    <span class="tag">Figma</span>
+                    <span class="tag">ERP</span>
+                    <span class="tag">AutoCAD</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Data Entry</h3>
+                <p>Mengelola dan menginput laporan keuangan akuntansi secara presisi.</p>
+                <div class="tags">
+                    <span class="tag">Excel</span>
+                    <span class="tag">SAP</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" style="text-align: center; margin-bottom: 50px;">
+        <h2><span>Mari Berkolaborasi</span></h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">Punya ide gila? Mari kita wujudkan bersama.</p>
+        <a href="mailto:reyyy243@gmail.com" class="cta-btn">Hubungi Saya</a>
+    </section>
+
+    <div class="chatbot-container">
+        <div class="chat-window" id="chat-window">
+            <div class="chat-header">
+                <i class="ri-robot-2-line"></i> Asisten Portofolio
+            </div>
+            <div class="chat-body" id="chat-body">
+                <div class="chat-message bot-message">
+                    Halo! Saya asisten AI Reyhan. Ketik "Lihat proyek" atau "Tentang Reyhan".
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Ketik pesan...">
+                <button class="chat-send-btn" id="chat-send"><i class="ri-send-plane-2-fill"></i></button>
+            </div>
+        </div>
+        <button class="chat-toggle-btn" id="chat-toggle">
+            <i class="ri-chat-smile-3-line"></i>
+        </button>
+    </div>
+
+    <script>
+        // 1. PRELOADER
+        window.addEventListener("load", () => {
+            setTimeout(() => {
+                const preloader = document.getElementById('preloader');
+                preloader.classList.add('hidden');
+            }, 1500);
+        });
+
+        // 2. THEME TOGGLE
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const body = document.body;
+        
+        if(localStorage.getItem('theme') === 'light') body.classList.add('light-mode');
+
+        themeToggleBtn.addEventListener('click', () => {
+            body.classList.toggle('light-mode');
+            localStorage.setItem('theme', body.classList.contains('light-mode') ? 'light' : 'dark');
+        });
+
+        // 3. TYPING EFFECT (DIPERBAIKI)
+        const textElement = document.getElementById('typing-text');
+        const phrases = ["Creativity.", "Innovation.", "Logic.", "Problem Solving."];
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            const currentPhrase = phrases[phraseIndex];
+            
+            if (isDeleting) {
+                textElement.textContent = currentPhrase.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                textElement.textContent = currentPhrase.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            if (!isDeleting && charIndex === currentPhrase.length) {
+                isDeleting = true;
+                setTimeout(type, 2000);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                setTimeout(type, 500);
+            } else {
+                setTimeout(type, isDeleting ? 100 : 200);
+            }
+        }
+        // Jalankan hanya jika elemen ditemukan
+        if(textElement) type();
+
+        // 4. CHATBOT LOGIC
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatWindow = document.getElementById('chat-window');
+        const chatBody = document.getElementById('chat-body');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+
+        chatToggle.addEventListener('click', () => {
+            chatWindow.classList.toggle('active');
+            if (chatWindow.classList.contains('active')) chatInput.focus();
+        });
+
+        function addMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('chat-message', sender + '-message');
+            msgDiv.textContent = text;
+            chatBody.appendChild(msgDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function handleChat() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+            
+            addMessage(text, 'user');
+            chatInput.value = '';
+
+            const lowerText = text.toLowerCase();
+            let reply = "Maaf, saya kurang paham. Coba tanya 'proyek' atau 'kontak'.";
+
+            if (lowerText.includes('halo') || lowerText.includes('hai')) {
+                reply = "Halo! Ada yang bisa saya bantu tentang portofolio Reyhan?";
+            } else if (lowerText.includes('siapa') || lowerText.includes('tentang')) {
+                reply = "Reyhan Woenarwan adalah mahasiswa Industrial Engineering di Univversitas Katolik Indonesia Atma Jaya dengan minat di Data & System dan Supply Chain";
+            } else if (lowerText.includes('proyek') || lowerText.includes('karya')) {
+                reply = "Reyhan memiliki pengalaman di Teknik Industri dan pengembangan AI. Cek bagian Proyek!";
+                document.querySelector('#projects').scrollIntoView({ behavior: 'smooth' });
+            } else if (lowerText.includes('kontak') || lowerText.includes('email')) {
+                reply = "Anda bisa menghubungi Reyhan via email di reyyy243@gmail.com";
+            }
+
+            setTimeout(() => addMessage(reply, 'bot'), 600);
+        }
+
+        chatSend.addEventListener('click', handleChat);
+        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleChat(); });
+
+        // 5. CANVAS PARTICLE BACKGROUND (Ditambahkan agar tidak gelap polos)
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = '#0ea5e9';
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.01; // Fade out effect
+                if (this.size <= 0.2 || this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 1;
+                }
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < 50; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+                
+                // Draw lines between close particles
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(14, 165, 233, ${0.2 - distance/500})`; // Fade line
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+    </script>
+</body>
+</html>
